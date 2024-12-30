@@ -1,4 +1,6 @@
 import React from 'react';
+import FocusLock from 'react-focus-lock';
+
 import Button from '../Button';
 import styles from './ToastPlayground.module.css';
 import ToastShelf from '../ToastShelf/ToastShelf';
@@ -8,7 +10,7 @@ const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 
 function ToastPlayground() {
   const [message, setMessage] = React.useState('');
-  const [variant, setVariant] = React.useState('notice');
+  const [variant, setVariant] = React.useState(VARIANT_OPTIONS[0]);
 
   const { createToast } = React.use(ToastContext);
 
@@ -27,54 +29,57 @@ function ToastPlayground() {
 
       <ToastShelf />
 
-      <div className={styles.controlsWrapper}>
-        <div className={styles.row}>
-          <label
-            htmlFor="message"
-            className={styles.label}
-            style={{ alignSelf: 'baseline' }}
-          >
-            Message
-          </label>
-          <div className={styles.inputWrapper}>
-            <textarea
-              required
-              id="message"
-              className={styles.messageInput}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.label}>Variant</div>
-          {VARIANT_OPTIONS.map((variant, index) => (
-            <div
-              key={index}
-              className={`${styles.inputWrapper} ${styles.radioWrapper}`}
+      <FocusLock>
+        <div className={styles.controlsWrapper}>
+          <div className={styles.row}>
+            <label
+              htmlFor="message"
+              className={styles.label}
+              style={{ alignSelf: 'baseline' }}
             >
-              <label htmlFor={variant}>
-                <input
-                  id={variant}
-                  type="radio"
-                  name="variant"
-                  value={variant}
-                  onChange={() => setVariant(variant)}
-                />
-                {variant}
-              </label>
+              Message
+            </label>
+            <div className={styles.inputWrapper}>
+              <textarea
+                required
+                id="message"
+                className={styles.messageInput}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
             </div>
-          ))}
-        </div>
+          </div>
 
-        <div className={styles.row}>
-          <div className={styles.label} />
-          <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-            <Button onClick={handleSubmit}>Pop Toast!</Button>
+          <div className={styles.row}>
+            <div className={styles.label}>Variant</div>
+            <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+              {VARIANT_OPTIONS.map((option, index) => {
+                const id = `variant-${option}`;
+                return (
+                  <label htmlFor={id} key={id}>
+                    <input
+                      id={id}
+                      type="radio"
+                      name="variant"
+                      value={option}
+                      checked={option === variant}
+                      onChange={() => setVariant(option)}
+                    /> 
+                    {option}
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.label} />
+            <div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
+              <Button onClick={handleSubmit}>Pop Toast!</Button>
+            </div>
           </div>
         </div>
-      </div>
+      </FocusLock>
     </div>
   );
 }
